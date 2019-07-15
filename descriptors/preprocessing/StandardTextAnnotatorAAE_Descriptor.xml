@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+    <primitive>false</primitive>
+    <delegateAnalysisEngineSpecifiers>
+        <delegateAnalysisEngine key="SegmenterAAE">
+            <import name="descriptors.preprocessing.SegmenterAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+        <delegateAnalysisEngine key="POSTaggerAAE">
+            <import name="descriptors.preprocessing.POSTaggerAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+        <delegateAnalysisEngine key="LemmatizerAAE">
+            <import name="descriptors.preprocessing.LemmatizerAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+        <delegateAnalysisEngine key="ParserAAE">
+            <import name="descriptors.preprocessing.ParserAAE_Descriptor"/>
+        </delegateAnalysisEngine>
+    </delegateAnalysisEngineSpecifiers>
+    <analysisEngineMetaData>
+        <name/>
+        <configurationParameters/>
+        <configurationParameterSettings/>
+        <flowConstraints>
+            <fixedFlow>
+                <node>SegmenterAAE</node>
+                <node>POSTaggerAAE</node>
+                <node>LemmatizerAAE</node>
+                <node>ParserAAE</node>
+            </fixedFlow>
+        </flowConstraints>
+        <capabilities/>
+        <operationalProperties>
+            <modifiesCas>true</modifiesCas>
+            <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+            <outputsNewCASes>false</outputsNewCASes>
+        </operationalProperties>
+    </analysisEngineMetaData>
+</analysisEngineDescription>

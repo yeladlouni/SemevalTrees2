@@ -1,0 +1,32 @@
+<analysisEngineDeploymentDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>Learning</name>
+    <description>LearningPipelineAAE</description>
+    <deployment protocol="jms" provider="activemq">
+        <casPool numberOfCASes="10" initialFsHeapSize="2000000"/>
+        <service>
+            <inputQueue endpoint="learning" brokerURL="http://127.0.0.1:61616" prefetch="0"/>
+            <topDescriptor>
+                <import name="descriptors.learning.LearningPipelineAAE_Descriptor"/>
+            </topDescriptor>
+            <analysisEngine async="true">
+                <delegates>
+                    <analysisEngine key="LearningAnnotatorAAE" async="true">
+                        <delegates>
+                            <analysisEngine key="LearningAnnotatorAE" inputQueueScaleout="1"/>
+                        </delegates>
+                    </analysisEngine>
+                    <remoteAnalysisEngine key="FeatureExtractorAAE" remoteReplyQueueScaleout="5">
+                        <inputQueue endpoint="feature_extraction" brokerURL="http://127.0.0.1:61616" prefetch="1"/>
+                        <serializer method="xmi"/>
+                        <casMultiplier poolSize="100" initialFsHeapSize="2000000" processParentLast="false"/>
+                        <asyncAggregateErrorConfiguration>
+                            <getMetadataErrors maxRetries="0" errorAction="Terminate" timeout="0"/>
+                            <processCasErrors maxRetries="0" thresholdAction="terminate" timeout="0" thresholdCount="0" thresholdWindow="0" continueOnRetryFailure="false"/>
+                            <collectionProcessCompleteErrors timeout="0" additionalErrorAction="Terminate"/>
+                        </asyncAggregateErrorConfiguration>
+                    </remoteAnalysisEngine>
+                </delegates>
+            </analysisEngine>
+        </service>
+    </deployment>
+</analysisEngineDeploymentDescription>

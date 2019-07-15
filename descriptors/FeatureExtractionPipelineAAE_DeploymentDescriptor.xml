@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDeploymentDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>FeatureExtraction</name>
+    <description>FeatureExtractionPipelineAAE_Descriptor</description>
+    <deployment protocol="jms" provider="activemq">
+        <casPool numberOfCASes="1" initialFsHeapSize="2000000" />
+        <service>
+            <inputQueue endpoint="feature_extraction" brokerURL="http://127.0.0.1:61616" prefetch="0" />
+            <topDescriptor>
+                <import name="descriptors.feature.FeatureExtractionAAE_Descriptor" />
+            </topDescriptor>
+            <analysisEngine async="true">
+                <delegates>
+                    <analysisEngine key="InputJCasMultiplierAAE" async="true">
+                        <delegates>
+                            <analysisEngine key="InputJCasMultiplierAE" inputQueueScaleout="1">
+                                <casMultiplier poolSize="10" initialFsHeapSize="2000000" processParentLast="false" />
+                            </analysisEngine>
+                        </delegates>
+                    </analysisEngine>
+                    <analysisEngine key="StandardTextAnnotator" async="true">
+                        <delegates>
+                            <analysisEngine key="StandardTextAnnotatorAAE" inputQueueScaleout="1"><scaleout numberOfInstances="1" /></analysisEngine>
+                        </delegates>
+                    </analysisEngine>
+                    <analysisEngine key="ProcessedJCASAggregatorAAE" async="true">
+                        <delegates>
+                            <analysisEngine key="ProcessedJCASAggregatorAE" inputQueueScaleout="1">
+                                <casMultiplier poolSize="10" initialFsHeapSize="2000000" processParentLast="false" />
+                            </analysisEngine>
+                        </delegates>
+                    </analysisEngine>
+                    <analysisEngine key="JCasPairGeneratorAAE" async="true">
+                        <delegates>
+                            <analysisEngine key="JCasPairGeneratorAE" inputQueueScaleout="1">
+                                <casMultiplier poolSize="10" initialFsHeapSize="2000000" processParentLast="false" />
+                            </analysisEngine>
+                        </delegates>
+                    </analysisEngine>
+                    <analysisEngine key="FeatureComputation" async="true">
+                        <delegates>
+                            <analysisEngine key="FeatureComputationAAE" inputQueueScaleout="1"><scaleout numberOfInstances="1" /></analysisEngine>
+                        </delegates>
+                    </analysisEngine>
+                </delegates>
+            </analysisEngine>
+        </service>
+    </deployment>
+</analysisEngineDeploymentDescription>
